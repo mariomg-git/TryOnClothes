@@ -12,10 +12,14 @@ checkpoints/ootd/ootd_hd/checkpoint-36000/unet_garm/*.safetensors
 checkpoints/ootd/ootd_hd/checkpoint-36000/unet_vton/*.safetensors
 checkpoints/ootd/vae/*.bin
 checkpoints/ootd/vae/*.safetensors
+checkpoints/ootd/text_encoder/*.bin
 checkpoints/humanparsing/*.pth
 checkpoints/humanparsing/*.onnx
 checkpoints/openpose/ckpts/*.pth
 checkpoints/clip-vit-large-patch14/.cache/
+checkpoints/clip-vit-large-patch14/*.bin
+checkpoints/ootd/.cache/
+checkpoints/humanparsing/.cache/
 
 # Archivos temporales
 *.log
