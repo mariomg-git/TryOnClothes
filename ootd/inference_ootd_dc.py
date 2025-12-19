@@ -1,8 +1,9 @@
 import pdb
 from pathlib import Path
 import sys
-PROJECT_ROOT = Path(__file__).absolute().parents[0].absolute()
+PROJECT_ROOT = Path(__file__).absolute().parents[1].absolute()
 sys.path.insert(0, str(PROJECT_ROOT))
+sys.path.insert(0, str(PROJECT_ROOT / 'ootd'))
 import os
 import torch
 import numpy as np
@@ -24,33 +25,41 @@ import torch.nn.functional as F
 from transformers import AutoProcessor, CLIPVisionModelWithProjection
 from transformers import CLIPTextModel, CLIPTokenizer
 
-VIT_PATH = "../checkpoints/clip-vit-large-patch14"
-VAE_PATH = "../checkpoints/ootd"
-UNET_PATH = "../checkpoints/ootd/ootd_dc/checkpoint-36000"
-MODEL_PATH = "../checkpoints/ootd"
+VIT_PATH = os.path.join(PROJECT_ROOT, "checkpoints", "clip-vit-large-patch14")
+VAE_PATH = os.path.join(PROJECT_ROOT, "checkpoints", "ootd")
+UNET_PATH = os.path.join(PROJECT_ROOT, "checkpoints", "ootd", "ootd_dc", "checkpoint-36000")
+MODEL_PATH = os.path.join(PROJECT_ROOT, "checkpoints", "ootd")
 
 class OOTDiffusionDC:
 
     def __init__(self, gpu_id):
-        self.gpu_id = 'cuda:' + str(gpu_id)
+        if gpu_id >= 0 and torch.cuda.is_available():
+            self.gpu_id = 'cuda:' + str(gpu_id)
+            torch_dtype = torch.float16
+        else:
+            self.gpu_id = 'cpu'
+            torch_dtype = torch.float32
 
         vae = AutoencoderKL.from_pretrained(
             VAE_PATH,
             subfolder="vae",
-            torch_dtype=torch.float16,
+            torch_dtype=torch_dtype,
+            local_files_only=True,
         )
 
         unet_garm = UNetGarm2DConditionModel.from_pretrained(
             UNET_PATH,
             subfolder="unet_garm",
-            torch_dtype=torch.float16,
+            torch_dtype=torch_dtype,
             use_safetensors=True,
+            local_files_only=True,
         )
         unet_vton = UNetVton2DConditionModel.from_pretrained(
             UNET_PATH,
             subfolder="unet_vton",
-            torch_dtype=torch.float16,
+            torch_dtype=torch_dtype,
             use_safetensors=True,
+            local_files_only=True,
         )
 
         self.pipe = OotdPipeline.from_pretrained(
@@ -58,17 +67,18 @@ class OOTDiffusionDC:
             unet_garm=unet_garm,
             unet_vton=unet_vton,
             vae=vae,
-            torch_dtype=torch.float16,
-            variant="fp16",
+            torch_dtype=torch_dtype,
+            variant="fp16" if torch_dtype == torch.float16 else None,
             use_safetensors=True,
             safety_checker=None,
             requires_safety_checker=False,
+            local_files_only=True,
         ).to(self.gpu_id)
 
         self.pipe.scheduler = UniPCMultistepScheduler.from_config(self.pipe.scheduler.config)
         
-        self.auto_processor = AutoProcessor.from_pretrained(VIT_PATH)
-        self.image_encoder = CLIPVisionModelWithProjection.from_pretrained(VIT_PATH).to(self.gpu_id)
+        self.auto_processor = AutoProcessor.from_pretrained(VIT_PATH, local_files_only=True)
+        self.image_encoder = CLIPVisionModelWithProjection.from_pretrained(VIT_PATH, local_files_only=True).to(self.gpu_id)
 
         self.tokenizer = CLIPTokenizer.from_pretrained(
             MODEL_PATH,

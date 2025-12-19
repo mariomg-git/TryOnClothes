@@ -49,8 +49,11 @@ class OpenposeDetector:
         # face_modelpath = os.path.join(annotator_ckpts_path, "facenet.pth")
 
         if not os.path.exists(body_modelpath):
-            from basicsr.utils.download_util import load_file_from_url
-            load_file_from_url(body_model_path, model_dir=annotator_ckpts_path)
+            # Download utility replacement
+            import urllib.request
+            os.makedirs(annotator_ckpts_path, exist_ok=True)
+            print(f"Downloading body pose model to {body_modelpath}")
+            urllib.request.urlretrieve(body_model_path, body_modelpath)
 
         # if not os.path.exists(hand_modelpath):
         #     from basicsr.utils.download_util import load_file_from_url

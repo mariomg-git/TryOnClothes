@@ -3,3 +3,34 @@ __pycache__/
 .vscode/
 *.pyc
 .uuid
+
+# Modelos grandes y archivos binarios pesados
+checkpoints/ootd/checkpoints/
+checkpoints/ootd/ootd_dc/checkpoint-36000/unet_garm/*.safetensors
+checkpoints/ootd/ootd_dc/checkpoint-36000/unet_vton/*.safetensors
+checkpoints/ootd/ootd_hd/checkpoint-36000/unet_garm/*.safetensors
+checkpoints/ootd/ootd_hd/checkpoint-36000/unet_vton/*.safetensors
+checkpoints/ootd/vae/*.bin
+checkpoints/ootd/vae/*.safetensors
+checkpoints/humanparsing/*.pth
+checkpoints/humanparsing/*.onnx
+checkpoints/openpose/ckpts/*.pth
+checkpoints/clip-vit-large-patch14/.cache/
+
+# Archivos temporales
+*.log
+error_log.txt
+app_output.log
+
+# Python cache adicional
+*.py[cod]
+*$py.class
+*.so
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Directorios de salida
+images_output/
+run/images_output/

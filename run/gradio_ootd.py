@@ -17,13 +17,14 @@ from ootd.inference_ootd_hd import OOTDiffusionHD
 from ootd.inference_ootd_dc import OOTDiffusionDC
 
 
-openpose_model_hd = OpenPose(0)
-parsing_model_hd = Parsing(0)
-ootd_model_hd = OOTDiffusionHD(0)
+# Use -1 for CPU mode, 0 for GPU
+openpose_model_hd = OpenPose(-1)
+parsing_model_hd = Parsing(-1)
+ootd_model_hd = OOTDiffusionHD(-1)
 
-openpose_model_dc = OpenPose(1)
-parsing_model_dc = Parsing(1)
-ootd_model_dc = OOTDiffusionDC(1)
+openpose_model_dc = OpenPose(-1)
+parsing_model_dc = Parsing(-1)
+ootd_model_dc = OOTDiffusionDC(-1)
 
 
 category_dict = ['upperbody', 'lowerbody', 'dress']
@@ -257,4 +258,4 @@ with block:
     ips_dc = [vton_img_dc, garm_img_dc, category_dc, n_samples_dc, n_steps_dc, image_scale_dc, seed_dc]
     run_button_dc.click(fn=process_dc, inputs=ips_dc, outputs=[result_gallery_dc])
 
-block.launch(server_name='0.0.0.0', server_port=7865)
+block.launch(server_name='127.0.0.1', server_port=7865)
