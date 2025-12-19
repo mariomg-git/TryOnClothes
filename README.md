@@ -1,59 +1,115 @@
-# OOTDiffusion
-This repository is the official implementation of OOTDiffusion
+# TryOnClothes - OOTDiffusion Windows Implementation
 
-🤗 [Try out OOTDiffusion](https://huggingface.co/spaces/levihsu/OOTDiffusion)
+Una implementación de OOTDiffusion optimizada para Windows que permite generar imágenes de personas probándose diferentes prendas de ropa usando IA.
 
-(Thanks to [ZeroGPU](https://huggingface.co/zero-gpu-explorers) for providing A100 GPUs)
+> **Basado en**: OOTDiffusion: Outfitting Fusion based Latent Diffusion for Controllable Virtual Try-on [[arXiv paper](https://arxiv.org/abs/2403.01779)]<br>
+> **Implementación Windows por**: mariomg-git<br>
+> **Proyecto original**: [levihsu/OOTDiffusion](https://github.com/levihsu/OOTDiffusion)
 
-<!-- Or [try our own demo](https://ootd.ibot.cn/) on RTX 4090 GPUs -->
+![demo](images/demo.png)
 
-> **OOTDiffusion: Outfitting Fusion based Latent Diffusion for Controllable Virtual Try-on** [[arXiv paper](https://arxiv.org/abs/2403.01779)]<br>
-> [Yuhao Xu](http://levihsu.github.io/), [Tao Gu](https://github.com/T-Gu), [Weifeng Chen](https://github.com/ShineChen1024), [Chengcai Chen](https://www.researchgate.net/profile/Chengcai-Chen)<br>
-> Xiao-i Research
+## 🌟 Características
 
+- ✅ **Compatibilidad total con Windows**
+- ✅ **Interfaz web fácil de usar** (Gradio)
+- ✅ **Carga de modelos local** (sin descargas online)
+- ✅ **Scripts automatizados** para instalación y ejecución
+- ✅ **Dos modos**: HD (alta definición) y DC (controlado por datos)
 
-Our model checkpoints trained on [VITON-HD](https://github.com/shadow2496/VITON-HD) (half-body) and [Dress Code](https://github.com/aimagelab/dress-code) (full-body) have been released
+## 🚀 Instalación Rápida
 
-* 🤗 [Hugging Face link](https://huggingface.co/levihsu/OOTDiffusion) for ***checkpoints*** (ootd, humanparsing, and openpose)
-* 📢📢 We support ONNX for [humanparsing](https://github.com/GoGoDuck912/Self-Correction-Human-Parsing) now. Most environmental issues should have been addressed : )
-* Please also download [clip-vit-large-patch14](https://huggingface.co/openai/clip-vit-large-patch14) into ***checkpoints*** folder
-* We've only tested our code and models on Linux (Ubuntu 22.04)
-
-![demo](images/demo.png)&nbsp;
-![workflow](images/workflow.png)&nbsp;
-
-## Installation
-1. Clone the repository
-
-```sh
-git clone https://github.com/levihsu/OOTDiffusion
+### 1. Clonar el repositorio
+```bash
+git clone https://github.com/mariomg-git/TryOnClothes.git
+cd TryOnClothes
 ```
 
-2. Create a conda environment and install the required packages
-
-```sh
-conda create -n ootd python==3.10
+### 2. Instalar dependencias
+```bash
+# Crear entorno conda
+conda create -n ootd python=3.10
 conda activate ootd
-pip install torch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2
+
+# Instalar paquetes
 pip install -r requirements.txt
 ```
 
-## Inference
-1. Half-body model
-
-```sh
-cd OOTDiffusion/run
-python run_ootd.py --model_path <model-image-path> --cloth_path <cloth-image-path> --scale 2.0 --sample 4
+### 3. Descargar modelos
+```bash
+python download_models_final.py
 ```
 
-2. Full-body model 
-
-> Garment category must be paired: 0 = upperbody; 1 = lowerbody; 2 = dress
-
-```sh
-cd OOTDiffusion/run
-python run_ootd.py --model_path <model-image-path> --cloth_path <cloth-image-path> --model_type dc --category 2 --scale 2.0 --sample 4
+### 4. Ejecutar la aplicación
+```bash
+INICIAR_APP.bat
 ```
+
+La aplicación se abrirá en: **http://127.0.0.1:7865**
+
+## 📋 Guía Detallada
+
+Para instrucciones paso a paso, consulta: [GUIA_INSTALACION.md](GUIA_INSTALACION.md)
+
+## 🎯 Uso
+
+1. **Subir imagen de modelo**: Sube una foto de una persona
+2. **Subir prenda**: Sube la imagen de la ropa que quieres probar
+3. **Seleccionar categoría**: 
+   - Upper-body (parte superior)
+   - Lower-body (parte inferior) 
+   - Dress (vestido)
+4. **Ajustar parámetros** y hacer clic en **Run**
+
+## 🛠 Scripts Incluidos
+
+- `INICIAR_APP.bat` - Inicia la aplicación rápidamente
+- `run_app.bat` - Script principal de ejecución
+- `run_debug.ps1` - Para debuguear problemas
+- `download_models_final.py` - Descarga todos los modelos necesarios
+- `test_models.py` - Verifica que los modelos funcionen
+- `monitor_app.ps1` - Monitorea el estado de la aplicación
+
+## ⚠ Requisitos del Sistema
+
+- **OS**: Windows 10/11
+- **RAM**: 8GB mínimo, 16GB recomendado
+- **Espacio**: ~15GB para modelos y código
+- **Python**: 3.9-3.11
+- **GPU**: NVIDIA recomendada (funciona en CPU pero más lento)
+
+## 🔧 Solución de Problemas
+
+### Error: "No se puede conectar a HuggingFace"
+✅ **Solucionado** - Los modelos se cargan localmente
+
+### Error: "No funciona la URL 0.0.0.0:7865"
+✅ **Solucionado** - Configurado para usar 127.0.0.1:7865
+
+### Problemas con paths/rutas
+✅ **Solucionado** - Rutas absolutas configuradas automáticamente
+
+## 📁 Estructura del Proyecto
+
+```
+TryOnClothes/
+├── checkpoints/          # Configuraciones de modelos
+├── ootd/                # Código principal de inferencia  
+├── preprocess/          # Preprocesamiento de imágenes
+├── run/                 # Scripts de ejecución y UI
+├── images/              # Imágenes de ejemplo
+├── *.py                 # Scripts de utilidad
+└── *.bat               # Scripts de Windows
+```
+
+## 🤝 Contribuciones
+
+Las contribuciones son bienvenidas. Por favor:
+
+1. Haz fork del repositorio
+2. Crea una rama para tu feature
+3. Commit tus cambios
+4. Push a la rama
+5. Abre un Pull Request
 
 ## Citation
 ```
@@ -64,6 +120,28 @@ python run_ootd.py --model_path <model-image-path> --cloth_path <cloth-image-pat
   year={2024}
 }
 ```
+
+## 📄 Licencia
+
+Este proyecto está basado en el trabajo original de [OOTDiffusion](https://github.com/levihsu/OOTDiffusion) con modificaciones para mejorar la compatibilidad con Windows y facilitar su uso.
+
+## 🙏 Créditos
+
+- **Proyecto original**: [OOTDiffusion](https://github.com/levihsu/OOTDiffusion)
+- **Implementación Windows**: mariomg-git
+- **Comunidad**: Gracias a todos los contribuidores
+
+---
+
+### 💡 ¿Necesitas ayuda?
+
+Si encuentras algún problema, por favor:
+
+1. Revisa la [Guía de Instalación](GUIA_INSTALACION.md)
+2. Ejecuta `run_debug.ps1` para ver errores detallados  
+3. Abre un [Issue](https://github.com/mariomg-git/TryOnClothes/issues) con el error completo
+
+**¡Disfruta probándote ropa virtualmente! 👕👗**
 
 ## Star History
 
